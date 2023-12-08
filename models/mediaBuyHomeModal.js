@@ -15,6 +15,14 @@ const mediaSchema = new mongoose.Schema({
     ref: 'BuyHome',
     required: true,
   },
+  path: {
+    type: String,  // Add path field to store the file path
+    required: false,
+  },
+  filename: {
+    type: String,  // Add filename field to store the file name
+    required: false,
+  },
 });
 
 module.exports = mongoose.model('Media', mediaSchema);

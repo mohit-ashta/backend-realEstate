@@ -26,7 +26,9 @@ exports.createBuyHome = catchAsyncErrors(async (req, res) => {
             const result = await mediaBuyHomeModal.create({
                 url: req.files[med].originalname || "",
                 product: buyHome._id,
-                type: req.files[med].mimetype || ""
+                type: req.files[med].mimetype || "",
+                path: req.files[med].path, // Store the file path
+                filename: req.files[med].filename, // Store the file filename
             });
             medias.push(result);
         }
