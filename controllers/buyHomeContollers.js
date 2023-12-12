@@ -76,41 +76,43 @@ exports.listHomes = catchAsyncErrors(async (req, res) => {
 
 
 // list of all delete home
-// exports.deleteBuyHome = catchAsyncErrors(async (req, res) => {
-//     try {
-//         const { id } = req.params;
-//         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-//             return res.status(400).json({
-//                success: false,
-//                 message: "Invalid BuyHome ID", 
-//             });
-//         }
-//         const buyHome = await BuyHome.deleteOne(id);
+// Corrected deleteBuyHome controller function
+exports.deleteHome = catchAsyncErrors(async (req, res, next) => {
 
-//         if (!buyHome) {
-//             return res.status(404).json({
-//                 success: false,
-//                 message: "BuyHome not found",
-//             });
-//         }
-//         return res.status(200).json({
-//             success: true,
-//             message: "BuyHome deleted successfully",
-//         });
-//     } catch (error) {
-//         return res.status(500).json({
-//             success: false,
-//             message: error.message,
-//         });
-//     }
+    console.log(req.params, "ewee");
+    try {
+        const {
+            id
+        } = req.params;
 
-//     const buyHome = await BuyHome.findById(req.params.id);
+        // Validate if id is a valid ObjectId
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid BuyHome ID",
+            });
+        }
 
-//     if (!buyHome) {
-//       return next(new ErrorHandler("buyHome not Found", 404));
-//     }
-//     await buyHome.deleteOne();
-//     res
-//       .status(200)
-//       .json({ success: true, message: "Product has been deleted successfully" });
-//   });
+        // Use findByIdAndDelete to find and delete the document
+        const buyHome = await BuyHome.findByIdAndDelete(id);
+
+        // Check if buyHome exists
+        if (!buyHome) {
+            return res.status(404).json({
+                success: false,
+                message: "BuyHome not found",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "BuyHome deleted successfully",
+        });
+    } catch (error) {
+        console.error("Error in deleteHome handler:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
+});
