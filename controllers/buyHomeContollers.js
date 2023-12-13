@@ -72,7 +72,30 @@ exports.listHomes = catchAsyncErrors(async (req, res) => {
 });
 
 
+exports.getHomesDetails = catchAsyncErrors(async (req, res, next) => {
+    try {
+        const {
+            id
+        } = req.params;
 
+        const buyHome = await BuyHome.findById(id).populate('media');
+
+        if (!buyHome) {
+            return next(new ErrorHandler("home not Found", 404));
+        }
+
+        res.status(200).json({
+            success: true,
+            buyHome
+        });
+    } catch (error) {
+        console.error("Error in deleteHome handler:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
+});
 
 
 // list of all delete home

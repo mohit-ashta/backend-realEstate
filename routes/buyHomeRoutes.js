@@ -1,6 +1,6 @@
 const express = require("express");
 const {
-    createBuyHome, listHomes, deleteHome, 
+    createBuyHome, listHomes, deleteHome, getHomesDetails, 
 } = require("../controllers/buyHomeContollers");
 const multer = require('multer');
 const path = require('path');
@@ -25,5 +25,5 @@ const router = express.Router();
 router.route("/createhome").post(upload.array("images", 20), createBuyHome);
 router.route("/home/list").get (listHomes);
 router.route("/home/list/:id").delete(deleteHome);
-
+router.route("/home/:id").get(getHomesDetails);
 module.exports = router;    
