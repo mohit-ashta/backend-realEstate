@@ -78,8 +78,6 @@ exports.listHomes = catchAsyncErrors(async (req, res) => {
 // list of all delete home
 // Corrected deleteBuyHome controller function
 exports.deleteHome = catchAsyncErrors(async (req, res, next) => {
-
-    console.log(req.params, "ewee");
     try {
         const {
             id
@@ -107,6 +105,7 @@ exports.deleteHome = catchAsyncErrors(async (req, res, next) => {
         return res.status(200).json({
             success: true,
             message: "BuyHome deleted successfully",
+            buyHome
         });
     } catch (error) {
         console.error("Error in deleteHome handler:", error);
