@@ -19,6 +19,38 @@ const buyHomeSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  bedroom: {
+    type: Number,
+    default: 0,
+  },
+  bathrooms: {
+    type: Number,
+    default: 0,
+  },
+  size: {
+    type: Number,
+    default: 0,
+  },
+  floor: {
+    type: Number,
+    default: 0,
+  },
+  renovation: {
+    type: String,
+    default: 0,
+  },
+  constructionYear: {
+    type: Number,
+    default: 0,
+  },
+  garage: {
+    type: String,
+    default: 0,
+  },
+  furnishing: {
+    type: String,
+    default: 0,
+  },
   media: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Media'
