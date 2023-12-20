@@ -4,7 +4,6 @@ const buyHomeSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "Please fill this field"],
-    trim: true,
   },
   description: {
     type: String,
@@ -15,7 +14,7 @@ const buyHomeSchema = new mongoose.Schema({
     required: [true, "Please fill this field"],
     maxLength: [8, "Price can't exceed 8 digits."],
   },
-  rating: {
+  rating: { 
     type: Number,
     default: 0,
   },
@@ -50,6 +49,11 @@ const buyHomeSchema = new mongoose.Schema({
   furnishing: {
     type: String,
     default: 0,
+  },
+  address: {
+    type: String,
+    required: [true, "Please fill this field"],
+    trim: true,
   },
   media: [{
     type: mongoose.Schema.Types.ObjectId,

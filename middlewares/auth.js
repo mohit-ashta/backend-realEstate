@@ -24,6 +24,32 @@ exports.authorizedRoles = (...roles) => {
 };
 
 // Middleware to check user role
+// exports.checkUserRole = (requiredRole) => {
+//   return (req, res, next) => {
+//     // Get the token from the request headers
+//     const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
+
+//     if (!token) {
+//       return res.status(401).json({ message: "Unauthorized: No token provided" });
+//     }
+
+//     // Verify the token
+//     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+//       if (err) {
+//         return res.status(401).json({ message: "Unauthorized: Invalid token" });
+//       }
+
+//       // Check if the user has the required role
+//       const userRole = decoded.role;
+//       if (!userRole || (requiredRole && !userRole.includes(requiredRole))) {
+//         return res.status(403).json({ message: "Forbidden: Insufficient role permissions" });
+//       }
+
+//       // If everything is fine, proceed to the next middleware or route handler
+//       next();
+//     });
+//   };
+// };
 exports.checkUserRole = (requiredRole) => {
   return (req, res, next) => {
     // Get the token from the request headers
@@ -34,11 +60,9 @@ exports.checkUserRole = (requiredRole) => {
     }
 
     // Verify the token
-    jwt.verify(token, 'qwertyuiop123456789WERTYUIOP', (err, decoded) => {
-      if (err) {
-        return res.status(401).json({ message: "Unauthorized: Invalid token" });
-      }
-
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      
       // Check if the user has the required role
       const userRole = decoded.role;
       if (!userRole || (requiredRole && !userRole.includes(requiredRole))) {
@@ -47,6 +71,13 @@ exports.checkUserRole = (requiredRole) => {
 
       // If everything is fine, proceed to the next middleware or route handler
       next();
-    });
+    } catch (err) {
+      if (err.name === 'JsonWebTokenError') {
+        return res.status(401).json({ message: "Unauthorized: Invalid token" });
+      } else {
+        // Handle other errors (e.g., TokenExpiredError)
+        return res.status(500).json({ message: "Internal Server Error" });
+      }
+    }
   };
 };
