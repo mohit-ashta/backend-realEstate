@@ -3,7 +3,7 @@ const validator = require("validator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const userRoles = ["user", "admin", "moderator"];
+const userRoles = ["user", "admin"];
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -33,6 +33,7 @@ const userSchema = new mongoose.Schema({
   resetPasswordToken: String,
   resetPasswordExpire: Date,
 });
+
 
 userSchema.pre("save", async function (next) {
   //agar modified nahi hai toh

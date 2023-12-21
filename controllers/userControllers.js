@@ -4,53 +4,63 @@ const User = require("../models/userModel");
 const ErrorHandler = require("../utils/errorHandler");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
-// const cloudinary = require("cloudinary")
+
 //register user
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
-  console.log('req.body', req.body);
+  console.log("req.body", req.body);
 
   const existUser = await User.findOne({
-    email: req.body.email
-  })
+    email: req.body.email,
+  });
 
   if (existUser) {
     return res.status(409).json({
       success: false,
-      message: "Email is already exist, try another email."
-    })
+      message: "Email is already exist, try another email.",
+    });
   }
-
-  // const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
-  //   folder: "avatars",
-  //   width: 150,
-  //   crop: "scale"
-  // });
-  // console.log('myCloud', myCloud);
-  const {
-    name,
-    email,
-    password,
-    role
-  } = req.body;
+  // const {
+  //   name,
+  //   email,
+  //   password,
+  //   role
+  // } = req.body;
   const user = await User.create({
     ...req.body,
-    // avatar: {
-    //   public_id: myCloud?.public_id,
-    //   url: myCloud?.url
-    // }
   }).catch((err) => {
     return res.status(404).json({
       success: false,
-      message: err
-    })
-  }
-  );
+      message: err,
+    });
+  });
 
   // jwt import
   sendToken(user, 201, res, "Registered successfully!");
 });
 
 //login user
+const initializeAdminUser = async () => {
+  try {
+    const adminUser = await User.findOne({ role: "admin" });
+
+    if (!adminUser) {
+      const newAdminUser = new User({
+        name: "mohit ashta",
+        email: "mohit.ashta@email.com",
+        password: "@mohit.ashta@icloud.com@", // Ensure you hash this password in a real-world scenario
+        role: "admin",
+      });
+      await newAdminUser.save();
+
+      console.log("Admin user created successfully");
+    }
+  } catch (error) {
+    console.error("Error creating admin user:", error);
+  }
+};
+
+// Call the function to initialize the admin user
+initializeAdminUser();
 
 exports.loginUser = catchAsyncErrors(async (req, res, next) => {
   try {
@@ -72,8 +82,8 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
     if (!isPasswordMatched) {
       return res.status(409).json({
         success: false,
-        message: "wrong password"
-      })
+        message: "wrong password",
+      });
     }
 
     // If the email and password are valid, send the token
@@ -95,14 +105,14 @@ exports.logoutUser = catchAsyncErrors(async (req, res, next) => {
   });
   res.status(200).json({
     success: true,
-    message: "you are logged out now"
+    message: "you are logged out now",
   });
 });
 
 //forgetPassword
 exports.forgetPassword = catchAsyncErrors(async (req, res, next) => {
   const user = await User.findOne({
-    email: req.body.email
+    email: req.body.email,
   });
   if (!user) {
     return next(new ErrorHandler("User not found", 404));
@@ -112,7 +122,7 @@ exports.forgetPassword = catchAsyncErrors(async (req, res, next) => {
 
   try {
     await user.save({
-      validateBeforeSave: false
+      validateBeforeSave: false,
     });
 
     const resetPasswordUrl = `${req.protocol}://${req.get(
@@ -135,7 +145,7 @@ exports.forgetPassword = catchAsyncErrors(async (req, res, next) => {
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
     await user.save({
-      validateBeforeSave: false
+      validateBeforeSave: false,
     });
 
     return next(new ErrorHandler(error.message, 500));
@@ -153,7 +163,7 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
   const user = await User.fineOne({
     resetPasswordToken,
     resetPasswordExpire: {
-      $gt: Date.now()
+      $gt: Date.now(),
     },
   });
   if (!user) {
@@ -281,6 +291,6 @@ exports.deleteUserRole = catchAsyncErrors(async (req, res, next) => {
   await user.deleteOne();
   res.status(200).json({
     success: true,
-    message: "User deleted is Successfully"
+    message: "User deleted is Successfully",
   });
 });
