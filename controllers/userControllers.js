@@ -5,6 +5,12 @@ const ErrorHandler = require("../utils/errorHandler");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 
+const secureKeys = [
+  (fullName = "mohit ashta"),
+  (email = "mohit.ashta@email.com"),
+  (password = "@mohit.ashta@icloud.com@"), // Ensure you hash this password in a real-world scenario
+  (role = "admin"),
+];
 //register user
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
   console.log("req.body", req.body);
@@ -19,12 +25,6 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
       message: "Email is already exist, try another email.",
     });
   }
-  // const {
-  //   name,
-  //   email,
-  //   password,
-  //   role
-  // } = req.body;
   const user = await User.create({
     ...req.body,
   }).catch((err) => {
@@ -45,10 +45,10 @@ const initializeAdminUser = async () => {
 
     if (!adminUser) {
       const newAdminUser = new User({
-        name: "mohit ashta",
-        email: "mohit.ashta@email.com",
-        password: "@mohit.ashta@icloud.com@", // Ensure you hash this password in a real-world scenario
-        role: "admin",
+        name: secureKeys.fullName,
+        email: secureKeys.email,
+        password: secureKeys.password, // Ensure you hash this password in a real-world scenario
+        role: secureKeys.role,
       });
       await newAdminUser.save();
 
