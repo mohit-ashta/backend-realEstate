@@ -5,12 +5,7 @@ const ErrorHandler = require("../utils/errorHandler");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 
-const secureKeys = [
-  (fullName = "mohit ashta"),
-  (email = "mohit.ashta@email.com"),
-  (password = "@mohit.ashta@icloud.com@"), // Ensure you hash this password in a real-world scenario
-  (role = "admin"),
-];
+
 //register user
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
   console.log("req.body", req.body);
@@ -45,10 +40,10 @@ const initializeAdminUser = async () => {
 
     if (!adminUser) {
       const newAdminUser = new User({
-        name: secureKeys.fullName,
-        email: secureKeys.email,
-        password: secureKeys.password, // Ensure you hash this password in a real-world scenario
-        role: secureKeys.role,
+        name: process.env.FULLNAME,
+        email: process.env.EMAIL,
+        password: process.env.PASSWORD, // Ensure you hash this password in a real-world scenario
+        role: process.env.ROLE,
       });
       await newAdminUser.save();
 
@@ -87,7 +82,7 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
     }
 
     // If the email and password are valid, send the token
-    sendToken(user, 200, res);
+    sendToken(user, 200, res, "Login successfully!");
   } catch (error) {
     // Handle errors and send an appropriate response to the frontend
     next(error);
