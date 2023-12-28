@@ -138,3 +138,43 @@ exports.deleteHome = catchAsyncErrors(async (req, res, next) => {
         });
     }
 });
+
+exports.updateHome = catchAsyncErrors(async (req, res) => {
+    try {
+      const { id } = req?.params;
+  
+      // Validate ID format
+      if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid BuyHome ID",
+        });
+      }
+  
+      // Find and update BuyHome
+      const buyHome = await BuyHome.findByIdAndUpdate(id, req.body, {
+        new: true, // Return the updated document
+        runValidators: true, // Run validators to ensure the update complies with the schema
+      });
+  
+      // Check if BuyHome exists
+      if (!buyHome) {
+        return res.status(404).json({
+          success: false,
+          message: "BuyHome not found",
+        });
+      }
+  
+      res.status(200).json({
+        success: true,
+        message: "Home updated successfully",
+        buyHome,
+      });
+    } catch (error) {
+      console.error("Error in updateHome handler:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+      });
+    }
+  });

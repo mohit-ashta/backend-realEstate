@@ -5,6 +5,12 @@ const ErrorHandler = require("../utils/errorHandler");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 
+// const secureKeys = [
+//   (fullName = "mohit ashta"),
+//   (email = "mailto:mohit.ashta@email.com"),
+//   (password = "@mailto:mohit.ashta@icloud.com@"), // Ensure you hash this password in a real-world scenario
+//   (role = "admin"),
+// ];
 
 //register user
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
