@@ -58,7 +58,7 @@ router
   .route("/createhome")
   .post(checkUserRole("admin"), upload.array("images", 20), createBuyHome);
 // Protect the update route
-router.route("/home/update/:id").put(checkUserRole("admin"),updateHome);
+router.route("/home/update/:id").put(checkUserRole("admin"), upload.array("images", 20), updateHome);
 
 // Protect the deleteHome route
 router.route("/home/list/:id").delete(checkUserRole("admin"), deleteHome);
