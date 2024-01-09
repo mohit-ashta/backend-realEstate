@@ -1,6 +1,7 @@
 const catchAsyncErrors = require("../middlewares/catchAsyncErrors");
 const sendToken = require("../middlewares/jwtToken");
 const User = require("../models/userModel");
+const ApiFeatures = require("../utils/apifeatures");
 const ErrorHandler = require("../utils/errorHandler");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
@@ -242,6 +243,17 @@ exports.getAllUsers = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+//  all users details get by pagination (admin)
+exports.getUserPerPage = catchAsyncErrors(async (req, res) => {
+  const resultPerPage = 5;
+  const userCount = await User.countDocuments();
+
+  const apiFeatures = new ApiFeatures(User.find(), req.query);
+  console.log(req.query,"page get");
+  apiFeatures.search().filter().pagination(resultPerPage);
+  const userPerPage = await apiFeatures.query;
+  res.status(200).json({ success: true, userPerPage, userCount });
+});
 // single users detail get by admin
 exports.getSingleUsers = catchAsyncErrors(async (req, res, next) => {
   const user = await User.findById(req.params.id);

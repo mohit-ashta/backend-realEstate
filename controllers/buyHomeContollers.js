@@ -9,11 +9,17 @@ const mediaBuyHomeModal = require("../models/mediaBuyHomeModal");
 // list of all home
 exports.listHomes = catchAsyncErrors(async (req, res) => {
   try {
-    const buyHome = await BuyHome.find().populate("media");
+    const resultPerHomePage = 2;
+    const homeCount = await BuyHome.countDocuments();
+    const apiFeatures = new ApiFeatures(BuyHome.find(), req.query);
+    apiFeatures.search().filter().pagination(resultPerHomePage);
 
-    return res.status(200).json({
+    // const buyHome = await BuyHome.find().populate('media')
+    const homePerPage = await apiFeatures.query;
+    return res.status(201).json({
       success: true,
-      buyHome,
+      homePerPage,
+      homeCount,
     });
   } catch (error) {
     return res.status(500).json({
@@ -38,16 +44,16 @@ exports.getHomesDetails = catchAsyncErrors(async (req, res, next) => {
       buyHome,
     });
   } catch (error) {
-    console.error("Error in delete Home handler:", error);
+    console.error("Error in deleteHome handler:", error);
     return res.status(500).json({
       success: false,
-      message: "There is Internal Server Error",
+      message: "Internal Server Error",
     });
   }
 });
 
 // list of all delete home
-
+// Corrected deleteBuyHome controller function
 exports.deleteHome = catchAsyncErrors(async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -67,13 +73,13 @@ exports.deleteHome = catchAsyncErrors(async (req, res, next) => {
     if (!buyHome) {
       return res.status(404).json({
         success: false,
-        message: "Home not found",
+        message: "BuyHome not found",
       });
     }
 
     return res.status(200).json({
       success: true,
-      message: "Home deleted successfully",
+      message: "BuyHome deleted successfully",
       buyHome,
     });
   } catch (error) {
@@ -87,12 +93,12 @@ exports.deleteHome = catchAsyncErrors(async (req, res, next) => {
 
 exports.createBuyHome = catchAsyncErrors(async (req, res) => {
   try {
-    console.log(">>> createBuyHome body", req.body);
-    console.log(">>> createBuyHome  files", req.files);
+    console.log("req.body", req.body);
+    console.log("req.files", req.files);
     if (req.files.length < 1) {
-      return res.status(402).json({
+      return res.status(401).json({
         success: false,
-        message: "Images is required",
+        message: "Media is required",
       });
     }
     const medias = [];
@@ -118,7 +124,7 @@ exports.createBuyHome = catchAsyncErrors(async (req, res) => {
     return res.status(201).json({
       success: true,
       buyHome,
-      message: "Home created successfully!",
+      message: "Home is created successfully!",
     });
   } catch (error) {
     return res.status(500).json({
