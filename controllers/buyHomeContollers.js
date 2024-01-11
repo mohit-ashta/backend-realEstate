@@ -9,9 +9,9 @@ const mediaBuyHomeModal = require("../models/mediaBuyHomeModal");
 // list of all home
 exports.listHomes = catchAsyncErrors(async (req, res) => {
   try {
-    const resultPerHomePage = 2;
+    const resultPerHomePage = 6;
     const homeCount = await BuyHome.countDocuments();
-    const apiFeatures = new ApiFeatures(BuyHome.find(), req.query);
+    const apiFeatures = new ApiFeatures(BuyHome.find().populate("media"), req.query);
     apiFeatures.search().filter().pagination(resultPerHomePage);
 
     // const buyHome = await BuyHome.find().populate('media')

@@ -3,9 +3,7 @@ class ApiFeatures {
     this.query = query;
     this.queryStr = queryStr;
   }
-
   search() {
-    // this req.query.keyword
     const keyword = this.queryStr.keyword
       ? {
           name: {
@@ -15,9 +13,10 @@ class ApiFeatures {
         }
       : {};
     console.log(keyword);
-    this.query = this.query.find({ ...keyword });
+    this.query = this.query.find({ ...keyword }); // Corrected line
     return this;
   }
+
 
   filter() {
     const queryCopy = { ...this.queryStr };
