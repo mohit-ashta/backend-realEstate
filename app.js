@@ -40,7 +40,7 @@ app.use("/api/v1", router);
 
 const PORT = process.env.PORT || 4000;
 const server = app.listen(PORT, () => {
-  console.log("http://localhost:" + PORT);
+  console.log("http://192.168.1.37:" + PORT);
 });
 
 process.on("unhandledRejection", (err) => {

@@ -13,7 +13,30 @@ class ApiFeatures {
         }
       : {};
     console.log(keyword);
-    this.query = this.query.find({ ...keyword }); // Corrected line
+    this.query = this.query.find({ ...keyword });
+    return this;
+  }
+  // search(keyword) {
+  //   const keywords = keyword
+  //      ? {
+  //          $or: [
+  //            { name: { $regex: keyword, $options: "i" } },
+  //            { email: { $regex: keyword, $options: "i" } },
+  //            { location: { $regex: keyword, $options: "i" } },
+  //          ],
+  //        }
+  //      : {};
+   
+  //   this.query = this.query.find({ ...keywords });
+  //   return this;
+  //  }
+  sort() {
+    if (this.queryStr.sort) {
+      const sortBy = this.queryStr.sort.split(",").join(" ");
+      this.query = this.query.sort(sortBy);
+    } else {
+      this.query = this.query.sort({ createdAt: -1 }); // Default sorting by createdAt in descending order
+    }
     return this;
   }
 

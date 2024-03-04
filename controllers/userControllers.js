@@ -70,13 +70,20 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
 
     // Check if email and password are provided
     if (!email || !password) {
-      throw new ErrorHandler("Invalid email or password", 400);
+      return res.status(400).json({
+        success: false,
+        message: "Invalid email or password",
+      });
     }
+    
 
     // Find user by email and select the password field
     const user = await User.findOne({ email }).select("+password");
     if (!user) {
-      throw new ErrorHandler("Invalid email or password", 400);
+      return res.status(400).json({
+        success: false,
+        message: "Invalid email or password",
+      });
     }
 
     // Compare the provided password with the user's stored password
@@ -84,7 +91,7 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
     if (!isPasswordMatched) {
       return res.status(409).json({
         success: false,
-        message: "wrong password",
+        message: "Your Password is Wrong",
       });
     }
 

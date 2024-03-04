@@ -13,7 +13,7 @@ exports.listHomes = catchAsyncErrors(async (req, res) => {
     const homeCount = await BuyHome.countDocuments();
     const apiFeatures = new ApiFeatures(BuyHome.find().populate("media"), req.query);
     apiFeatures.search().filter().pagination(resultPerHomePage);
-
+    apiFeatures.query.sort({ createdAt: -1 });
     // const buyHome = await BuyHome.find().populate('media')
     const homePerPage = await apiFeatures.query;
     return res.status(201).json({
